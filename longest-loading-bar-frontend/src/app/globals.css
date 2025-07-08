@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import "@fontsource/share-tech-mono";
+
 
 :root {
   --background: #ffffff;
