@@ -22,6 +22,10 @@
 html {
   font-size: 133%;
 }
+body, html, #__next {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
 
 body {
   background: var(--background);

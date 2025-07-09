@@ -21,11 +21,27 @@ export default function LoadingBar({
   const [progress, setProgress] = useState<number>(0);
   const [finishDate, setFinishDate] = useState<string>("");
 
+  const [barWidth, setBarWidth] = useState<number>(800);
+
+  // Responsive width calculation on mount and resize
+  useEffect(() => {
+    function updateWidth() {
+      const maxWidth = 800;
+      const padding = 32; // adjust as needed for container padding
+      const availableWidth = window.innerWidth - padding * 2;
+      setBarWidth(Math.min(maxWidth, availableWidth));
+    }
+
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  // Progress fetching logic same as before
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
     if (mode === "localDay") {
-      // Local day bar: update every second on frontend
       const updateLocalDay = () => {
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
@@ -88,8 +104,8 @@ export default function LoadingBar({
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center w-full p-4">
-        <SketchLoadingBar progress={progress} />
+      <div className="flex flex-col items-center justify-center w-full px-4 sm:px-8 py-4">
+        <SketchLoadingBar progress={progress} width={barWidth} />
       </div>
 
       <ProgressInfo title={title} percentStr={percentStr} formattedDate={formattedDate} />

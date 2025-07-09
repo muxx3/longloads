@@ -38,16 +38,17 @@ export default function Home() {
   const currentBar = bars[currentIndex];
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-black">
-      <div className="text-center text-white mb-2 text-sm sm:text-base md:text-lg">
-        use j/k to switch
-      </div>
-      <LoadingBar
-        endpoint={currentBar.endpoint}
-        mode={currentBar.mode as "server" | "localDay"}
-        title={currentBar.title}
-      />
-    </main>
+<main className="min-h-screen flex flex-col items-center justify-center bg-black">
+  <div className="text-center font-share-tech-mono text-white mb-10">
+    use j/k to switch
+  </div>
+  <LoadingBar
+    endpoint={currentBar.endpoint}
+    mode={currentBar.mode as "server" | "localDay"}
+    title={currentBar.title}
+  />
+</main>
+
   );
 }
 

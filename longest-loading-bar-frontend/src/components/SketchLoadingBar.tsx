@@ -1,24 +1,21 @@
 import rough from "roughjs/bin/rough";
 import React, { useEffect, useRef } from "react";
 
-export default function SketchLoadingBar({ progress }: { progress: number }) {
+export default function SketchLoadingBar({ progress, width = 800 }: { progress: number; width?: number }) {
   const svgRef = useRef<SVGSVGElement>(null);
   const rcRef = useRef<ReturnType<typeof rough.svg> | null>(null);
 
-  const width = 800;
   const height = 30;
 
-  // Create rc and draw outline once
   useEffect(() => {
     if (!svgRef.current) return;
 
     const svg = svgRef.current;
-    svg.innerHTML = ""; // clear just in case
+    svg.innerHTML = "";
 
     const rc = rough.svg(svg);
     rcRef.current = rc;
 
-    // Outline (rounded path)
     const radius = 5;
     const roundedPath: [number, number][] = [
       [radius, 0],
@@ -38,26 +35,21 @@ export default function SketchLoadingBar({ progress }: { progress: number }) {
       strokeWidth: 2,
     });
     svg.appendChild(sketchyOutline);
+  }, [width]);
 
-  }, []); // ← run ONCE
-
-  // Draw / update fill every time progress changes
   useEffect(() => {
     if (!svgRef.current || !rcRef.current) return;
 
     const svg = svgRef.current;
 
-    // Remove old fill rectangles
     const oldFills = svg.querySelectorAll(".bar-fill");
     oldFills.forEach(el => el.remove());
 
-    // Gap
     const gap = 4;
     const innerWidth = width - 2 * gap;
     const innerHeight = height - 2 * gap;
     const filledWidth = Math.max(progress * innerWidth, 1);
 
-    // Draw new fill
     const fill = rcRef.current.rectangle(
       gap,
       gap,
@@ -72,9 +64,8 @@ export default function SketchLoadingBar({ progress }: { progress: number }) {
     );
     fill.classList.add("bar-fill");
     svg.appendChild(fill);
+  }, [progress, width]);
 
-  }, [progress]); // ← run every time progress changes
-
-  return <svg ref={svgRef} width={width} height={height} />;
+  return <svg ref={svgRef} width={width} height={height} style={{ maxWidth: "100%", height: "auto" }} />;
 }
 
