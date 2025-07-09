@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 
 export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
   const [displayed, setDisplayed] = useState("");
-  const audioContext = useRef<AudioContext>();
+  const audioContext = useRef<AudioContext | null>(null);
   const audioBuffer = useRef<AudioBuffer | null>(null);
   const started = useRef(false);
 
