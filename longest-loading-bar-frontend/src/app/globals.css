@@ -19,6 +19,9 @@
     --foreground: #ededed;
   }
 }
+html {
+  font-size: 133%;
+}
 
 body {
   background: var(--background);
