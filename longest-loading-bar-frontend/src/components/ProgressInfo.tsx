@@ -16,17 +16,16 @@ export default function ProgressInfo({
 
   return (
     <div
-      className="fixed top-5 left-5 text-left font-[ShareTechMono] text-white bg-black/80 p-3 rounded"
+      className="fixed top-5 left-5 text-left text-white bg-black/80 p-3 rounded"
       style={{
-        //border: "2px solid white",
         fontSize: "0.95rem",
         lineHeight: "1.5",
         whiteSpace: "pre-line",
       }}
     >
-	{typedStatic}
-	{"\n"}
-	{percentStr}
+      {typedStatic}
+      {"\n"}
+      {percentStr}
     </div>
   );
 }
