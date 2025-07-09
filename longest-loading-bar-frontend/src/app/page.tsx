@@ -4,22 +4,22 @@ import React, { useState, useEffect } from "react";
 import LoadingBar from "@/components/LoadingBar";
 
 export default function Home() {
-	const bars = [
-  {
-    title: "1 Million Years",
-    endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar1",
-    mode: "server",
-  },
-  {
-    title: "100 Years",
-    endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar2",
-    mode: "server",
-  },
-  {
-    title: "Local Day",
-    mode: "localDay",
-  },
-];
+  const bars = [
+    {
+      title: "1 Million Years",
+      endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar1",
+      mode: "server",
+    },
+    {
+      title: "100 Years",
+      endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar2",
+      mode: "server",
+    },
+    {
+      title: "Local Day",
+      mode: "localDay",
+    },
+  ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -39,10 +39,14 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-black">
-      <div className="text-center font-[ShareTechMono] text-white mb-2">
+      <div className="text-center text-white mb-2 text-sm sm:text-base md:text-lg">
         use j/k to switch
       </div>
-      <LoadingBar endpoint={currentBar.endpoint} mode={currentBar.mode as "server" | "localDay"} title={currentBar.title} />
+      <LoadingBar
+        endpoint={currentBar.endpoint}
+        mode={currentBar.mode as "server" | "localDay"}
+        title={currentBar.title}
+      />
     </main>
   );
 }
