@@ -4,11 +4,22 @@ import React, { useState, useEffect } from "react";
 import LoadingBar from "@/components/LoadingBar";
 
 export default function Home() {
-  const bars = [
-    { title: "1 Million Years", endpoint: "http://localhost:8787/bar1", mode: "server" },
-    { title: "100 Years", endpoint: "http://localhost:8787/bar2", mode: "server" },
-    { title: "Local Day", mode: "localDay" },
-  ];
+	const bars = [
+  {
+    title: "1 Million Years",
+    endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar1",
+    mode: "server",
+  },
+  {
+    title: "100 Years",
+    endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar2",
+    mode: "server",
+  },
+  {
+    title: "Local Day",
+    mode: "localDay",
+  },
+];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
