@@ -1,65 +1,75 @@
-"use client";
-
-import { useEffect, useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
   const [displayed, setDisplayed] = useState("");
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const audioBufferRef = useRef<AudioBuffer | null>(null);
+  const audioContext = useRef<AudioContext | null>(null);
+  const audioBuffer = useRef<AudioBuffer | null>(null);
+  const started = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
+    if (!soundUrl) return;
 
-    const loadSound = async () => {
-      if (!soundUrl) return;
-      try {
-        const context = new AudioContext();
-        const response = await fetch(soundUrl);
-        const arrayBuffer = await response.arrayBuffer();
-        const buffer = await context.decodeAudioData(arrayBuffer);
-        if (isMounted) {
-          audioContextRef.current = context;
-          audioBufferRef.current = buffer;
-        }
-      } catch (error) {
-        console.error("Error loading audio:", error);
-      }
-    };
+    if (!audioContext.current) {
+      audioContext.current = new AudioContext();
+    }
 
-    loadSound();
-
-    return () => {
-      isMounted = false;
-    };
+    fetch(soundUrl)
+      .then((res) => res.arrayBuffer())
+      .then((arrayBuffer) => audioContext.current!.decodeAudioData(arrayBuffer))
+      .then((decodedBuffer) => {
+        audioBuffer.current = decodedBuffer;
+      })
+      .catch((err) => console.error("Error loading audio:", err));
   }, [soundUrl]);
 
   useEffect(() => {
-    let currentIndex = 0;
-    let interval: NodeJS.Timeout;
+    let i = 0;
+    let stopped = false;
 
-    setDisplayed(""); // reset text when text prop changes
+    setDisplayed("");
+    started.current = false; // Reset started ref on new text
 
-    function type() {
-      currentIndex++;
-      setDisplayed(text.slice(0, currentIndex));
-
-      if (soundUrl && audioContextRef.current && audioBufferRef.current) {
-        const source = audioContextRef.current.createBufferSource();
-        source.buffer = audioBufferRef.current;
-        source.connect(audioContextRef.current.destination);
-        source.start(0);
+    async function playClick() {
+      if (!audioContext.current || !audioBuffer.current) return;
+      if (audioContext.current.state === "suspended" && !started.current) {
+        await audioContext.current.resume();
+        started.current = true;
       }
-
-      if (currentIndex >= text.length) {
-        clearInterval(interval);
-      }
+      const source = audioContext.current.createBufferSource();
+      source.buffer = audioBuffer.current!;
+      source.connect(audioContext.current.destination);
+      source.start(0);
     }
 
-    if (text.length > 0) {
-      interval = setInterval(type, speed);
-    }
+    // Optional startup delay
+    const delayBeforeTyping = 499;
 
-    return () => clearInterval(interval);
+    const delayTimeout = setTimeout(() => {
+      function type() {
+        if (stopped) return;
+
+        setDisplayed(text.slice(0, i + 1));
+
+        if (soundUrl && i < text.length - 4) {
+          playClick().catch(() => {});
+        }
+
+        i++;
+        if (i < text.length) {
+          setTimeout(type, speed);
+        }
+      }
+
+      type();
+    }, delayBeforeTyping);
+
+    // Initial click to signal typing start
+    playClick().catch(() => {});
+
+    return () => {
+      stopped = true;
+      clearTimeout(delayTimeout);
+    };
   }, [text, speed, soundUrl]);
 
   return displayed;
