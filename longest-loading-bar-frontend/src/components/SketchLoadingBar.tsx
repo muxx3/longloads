@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from "react";
 
 export default function SketchLoadingBar({ progress }: { progress: number }) {
   const svgRef = useRef<SVGSVGElement>(null);
-  const rcRef = useRef<ReturnType<typeof rough.svg>>();
+  const rcRef = useRef<ReturnType<typeof rough.svg> | null>(null);
 
   const width = 800;
   const height = 30;
