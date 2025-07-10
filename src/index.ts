@@ -19,7 +19,7 @@ export default {
       }), {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": "https://longloads.com",
         },
       });
     }
@@ -47,8 +47,8 @@ export default {
       }), {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
+          "Access-Control-Allow-Origin": "https://longloads.com",
+		},
       });
     }
 
@@ -78,7 +78,7 @@ export default {
       }), {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
+		  "Access-Control-Allow-Origin": "https://longloads.com",
         },
       });
     }
