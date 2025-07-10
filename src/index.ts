@@ -1,10 +1,17 @@
+function formatDate(date: Date) {
+  const day = date.getDate().toString().padStart(2, "0");
+  const monthShort = date.toLocaleString("en-US", { month: "short" });
+  const year = date.getFullYear();
+  return `${day}-${monthShort}-${year}`;
+}
+
 export default {
   async fetch(request: Request) {
     const url = new URL(request.url);
 
     const allowedOrigins = [
       "http://localhost:3000",
-      "https://longloads.com"
+      "https://longloads.com",
     ];
     const origin = request.headers.get("Origin") || "";
     const corsOrigin = allowedOrigins.includes(origin) ? origin : "null";
@@ -20,49 +27,49 @@ export default {
       const estimatedFinishYear = 2025 + YEARS_TO_FINISH;
       const estimatedFinishStr = `08-July-${estimatedFinishYear}`;
 
-      return new Response(JSON.stringify({
-        progress,
-        estimated_finish: estimatedFinishStr,
-      }), {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": corsOrigin,
-        },
-      });
+      return new Response(
+        JSON.stringify({
+          progress,
+          estimated_finish: estimatedFinishStr,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": corsOrigin,
+          },
+        }
+      );
     }
 
-	if (url.pathname === "/bar2") {
-		const START_TIMESTAMP = 1751958000; // seconds since epoch
-		const YEARS_TO_FINISH = 100;
-		const startDate = new Date(START_TIMESTAMP * 1000);
-		const estimatedFinishDate = new Date(startDate);
-		estimatedFinishDate.setFullYear(startDate.getFullYear() + YEARS_TO_FINISH);
+    if (url.pathname === "/bar2") {
+      const START_TIMESTAMP = 1751958000; // seconds since epoch
+      const YEARS_TO_FINISH = 100;
+      const startDate = new Date(START_TIMESTAMP * 1000);
+      const estimatedFinishDate = new Date(startDate);
+      estimatedFinishDate.setFullYear(startDate.getFullYear() + YEARS_TO_FINISH);
 
-		const now = new Date();
+      const now = new Date();
 
-		const totalDurationMs = estimatedFinishDate.getTime() - startDate.getTime();
-		const elapsedMs = now.getTime() - startDate.getTime();
+      const totalDurationMs = estimatedFinishDate.getTime() - startDate.getTime();
+      const elapsedMs = now.getTime() - startDate.getTime();
 
-		const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
+      const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
 
-		const day = estimatedFinishDate.getDate().toString().padStart(2, "0");
-		const monthShort = estimatedFinishDate.toLocaleString("en-US", { month: "short" });
-		const year = estimatedFinishDate.getFullYear();
-		const estimatedFinishStr = `${day}-${monthShort}-${year}`;
+      const estimatedFinishStr = formatDate(estimatedFinishDate);
 
-		return new Response(
-			JSON.stringify({
-				progress,
-				estimated_finish: estimatedFinishStr,
-			}),
-			{
-				headers: {
-					"Content-Type": "application/json",
-					"Access-Control-Allow-Origin": corsOrigin,
-				},
-			}
-		);
-	}
+      return new Response(
+        JSON.stringify({
+          progress,
+          estimated_finish: estimatedFinishStr,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": corsOrigin,
+          },
+        }
+      );
+    }
 
     if (url.pathname === "/bar3") {
       const now = new Date();
@@ -71,20 +78,21 @@ export default {
       const totalSeconds = (endOfDay.getTime() - startOfDay.getTime()) / 1000;
       const elapsedSeconds = (now.getTime() - startOfDay.getTime()) / 1000;
       const progress = Math.min(elapsedSeconds / totalSeconds, 1);
-      const day = endOfDay.getDate().toString().padStart(2, "0");
-      const monthShort = endOfDay.toLocaleString("en-US", { month: "short" });
-      const year = endOfDay.getFullYear();
-      const estimatedFinishStr = `${day}-${monthShort}-${year}`;
 
-      return new Response(JSON.stringify({
-        progress,
-        estimated_finish: estimatedFinishStr,
-      }), {
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": corsOrigin,
-        },
-      });
+      const estimatedFinishStr = formatDate(endOfDay);
+
+      return new Response(
+        JSON.stringify({
+          progress,
+          estimated_finish: estimatedFinishStr,
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": corsOrigin,
+          },
+        }
+      );
     }
 
     return new Response("Not found", { status: 404 });
