@@ -1,54 +1,10 @@
-"use client";
+import BarSwitcher from "@/components/BarSwitcher";
 
-import React, { useState, useEffect } from "react";
-import LoadingBar from "@/components/LoadingBar";
-
-export default function Home() {
-  const bars = [
-    {
-      title: "1 Million Years",
-      endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar1",
-      mode: "server",
-    },
-    {
-      title: "100 Years",
-      endpoint: "https://longest-loading-bar.muxxe-dev.workers.dev/bar2",
-      mode: "server",
-    },
-    {
-      title: "Local Day",
-      mode: "localDay",
-    },
-  ];
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "k") {
-        setCurrentIndex((prev) => (prev + 1) % bars.length);
-      } else if (e.key === "j") {
-        setCurrentIndex((prev) => (prev - 1 + bars.length) % bars.length);
-      }
-    }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  },);
-
-  const currentBar = bars[currentIndex];
-
+export default function Page() {
   return (
-<main className="min-h-screen flex flex-col items-center justify-center bg-black">
-  <div className="text-center font-share-tech-mono text-white mb-10">
-    use j/k to switch
-  </div>
-  <LoadingBar
-    endpoint={currentBar.endpoint}
-    mode={currentBar.mode as "server" | "localDay"}
-    title={currentBar.title}
-  />
-</main>
-
+    <main className="min-h-screen flex flex-col items-center justify-center bg-black">
+      <BarSwitcher />
+    </main>
   );
 }
 
