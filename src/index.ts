@@ -52,36 +52,34 @@ export default {
       });
     }
 
-    if (url.pathname === "/bar3") {
-      // Daily progress bar
-      const now = new Date();
+	if (url.pathname === "/bar3") {
+		const now = new Date();
 
-      // UTC midnight today
-      const startOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0));
-      // UTC midnight tomorrow
-      const endOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 0, 0, 0));
+		// Local midnight today
+		const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+		// Local midnight tomorrow
+		const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
 
-      const totalSeconds = (endOfDay.getTime() - startOfDay.getTime()) / 1000;
-      const elapsedSeconds = (now.getTime() - startOfDay.getTime()) / 1000;
+		const totalSeconds = (endOfDay.getTime() - startOfDay.getTime()) / 1000;
+		const elapsedSeconds = (now.getTime() - startOfDay.getTime()) / 1000;
 
-      const progress = Math.min(elapsedSeconds / totalSeconds, 1);
+		const progress = Math.min(elapsedSeconds / totalSeconds, 1);
 
-      // Format estimated finish as midnight tomorrow
-      const day = endOfDay.getUTCDate().toString().padStart(2, "0");
-      const monthShort = endOfDay.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
-      const year = endOfDay.getUTCFullYear();
-      const estimatedFinishStr = `${day}-${monthShort}-${year}`;
+		const day = endOfDay.getDate().toString().padStart(2, "0");
+		const monthShort = endOfDay.toLocaleString("en-US", { month: "short" });
+		const year = endOfDay.getFullYear();
+		const estimatedFinishStr = `${day}-${monthShort}-${year}`;
 
-      return new Response(JSON.stringify({
-        progress,
-        estimated_finish: estimatedFinishStr,
-      }), {
-        headers: {
-          "Content-Type": "application/json",
-		  "Access-Control-Allow-Origin": "https://longloads.com",
-        },
-      });
-    }
+		return new Response(JSON.stringify({
+			progress,
+			estimated_finish: estimatedFinishStr,
+		}), {
+			headers: {
+				"Content-Type": "application/json",
+				"Access-Control-Allow-Origin": "https://longloads.com",
+			},
+		});
+	}
 
     return new Response("Not found", { status: 404 });
   },
