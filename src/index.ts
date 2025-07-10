@@ -2,6 +2,13 @@ export default {
   async fetch(request: Request) {
     const url = new URL(request.url);
 
+    const allowedOrigins = [
+      "http://localhost:3000",
+      "https://longloads.com"
+    ];
+    const origin = request.headers.get("Origin") || "";
+    const corsOrigin = allowedOrigins.includes(origin) ? origin : "null";
+
     if (url.pathname === "/bar1") {
       const START_TIMESTAMP = 1751958000;
       const YEARS_TO_FINISH = 1_000_000;
@@ -19,7 +26,7 @@ export default {
       }), {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "https://longloads.com",
+          "Access-Control-Allow-Origin": corsOrigin,
         },
       });
     }
@@ -47,39 +54,33 @@ export default {
       }), {
         headers: {
           "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "https://longloads.com",
-		},
+          "Access-Control-Allow-Origin": corsOrigin,
+        },
       });
     }
 
-	if (url.pathname === "/bar3") {
-		const now = new Date();
+    if (url.pathname === "/bar3") {
+      const now = new Date();
+      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+      const totalSeconds = (endOfDay.getTime() - startOfDay.getTime()) / 1000;
+      const elapsedSeconds = (now.getTime() - startOfDay.getTime()) / 1000;
+      const progress = Math.min(elapsedSeconds / totalSeconds, 1);
+      const day = endOfDay.getDate().toString().padStart(2, "0");
+      const monthShort = endOfDay.toLocaleString("en-US", { month: "short" });
+      const year = endOfDay.getFullYear();
+      const estimatedFinishStr = `${day}-${monthShort}-${year}`;
 
-		// Local midnight today
-		const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-		// Local midnight tomorrow
-		const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-
-		const totalSeconds = (endOfDay.getTime() - startOfDay.getTime()) / 1000;
-		const elapsedSeconds = (now.getTime() - startOfDay.getTime()) / 1000;
-
-		const progress = Math.min(elapsedSeconds / totalSeconds, 1);
-
-		const day = endOfDay.getDate().toString().padStart(2, "0");
-		const monthShort = endOfDay.toLocaleString("en-US", { month: "short" });
-		const year = endOfDay.getFullYear();
-		const estimatedFinishStr = `${day}-${monthShort}-${year}`;
-
-		return new Response(JSON.stringify({
-			progress,
-			estimated_finish: estimatedFinishStr,
-		}), {
-			headers: {
-				"Content-Type": "application/json",
-				"Access-Control-Allow-Origin": "https://longloads.com",
-			},
-		});
-	}
+      return new Response(JSON.stringify({
+        progress,
+        estimated_finish: estimatedFinishStr,
+      }), {
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": corsOrigin,
+        },
+      });
+    }
 
     return new Response("Not found", { status: 404 });
   },
