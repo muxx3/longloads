@@ -1,13 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import LoadingBar from "@/components/LoadingBar";
-
-type Bar = {
-  title: string;
-  endpoint?: string;
-  mode: "server" | "localDay";
-};
 
 export default function BarSwitcher() {
   const [baseURL, setBaseURL] = useState("https://longest-loading-bar.muxxe-dev.workers.dev");
@@ -18,7 +12,7 @@ export default function BarSwitcher() {
     }
   }, []);
 
-  const bars: Bar[] = useMemo(() => [
+  const bars = React.useMemo(() => [
     {
       title: "1 Million Years",
       endpoint: `${baseURL}/bar1`,
@@ -37,31 +31,51 @@ export default function BarSwitcher() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  const switchNextBar = useCallback(() => {
+    setCurrentIndex((prev) => (prev + 1) % bars.length);
+  }, [bars.length]);
+
+  const switchPrevBar = useCallback(() => {
+    setCurrentIndex((prev) => (prev - 1 + bars.length) % bars.length);
+  }, [bars.length]);
+
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "k") {
-        setCurrentIndex((prev) => (prev + 1) % bars.length);
+        switchNextBar();
       } else if (e.key === "j") {
-        setCurrentIndex((prev) => (prev - 1 + bars.length) % bars.length);
+        switchPrevBar();
       }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [bars.length]);
+  }, [switchNextBar, switchPrevBar]);
 
   const currentBar = bars[currentIndex];
 
   return (
-    <section tabIndex={0} aria-label="Loading bar switcher" className="outline-none">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={switchNextBar}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          switchNextBar();
+        }
+      }}
+      className="cursor-pointer select-none"
+      aria-label="Switch loading bar. Tap or press j/k keys to change."
+    >
       <div className="text-center font-share-tech-mono text-white mb-10">
-        Use <kbd>j</kbd>/<kbd>k</kbd> to switch
+        Use <kbd>j</kbd>/<kbd>k</kbd> keys or tap here to switch
       </div>
       <LoadingBar
         endpoint={currentBar.endpoint}
-        mode={currentBar.mode}
+        mode={currentBar.mode as "server" | "localDay"}
         title={currentBar.title}
       />
-    </section>
+    </div>
   );
 }
 
