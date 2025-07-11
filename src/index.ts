@@ -17,7 +17,7 @@ export default {
     const corsOrigin = allowedOrigins.includes(origin) ? origin : "null";
 
     if (url.pathname === "/bar1") {
-      const START_TIMESTAMP = 1751958000;
+      const START_TIMESTAMP = 1751932800;
       const YEARS_TO_FINISH = 1_000_000;
       const SECONDS_PER_YEAR = 31_557_600;
       const TOTAL_DURATION_SECONDS = YEARS_TO_FINISH * SECONDS_PER_YEAR;
@@ -42,7 +42,7 @@ export default {
     }
 
 	if (url.pathname === "/bar2") {
-		const START_TIMESTAMP = 1751958000; // 8 July 2025 at 00:00:00 UTC
+		const START_TIMESTAMP = 1751932800; // 8 July 2025 at 00:00:00 UTC
 		const YEARS_TO_FINISH = 100;
 
 		const startDate = new Date(START_TIMESTAMP * 1000);
