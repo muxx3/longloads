@@ -42,7 +42,7 @@ export default {
     }
 
 	if (url.pathname === "/bar2") {
-		const START_TIMESTAMP = 1751923200; // 8 July 2025 at 00:00:00 UTC
+		const START_TIMESTAMP = Date.UTC(2025, 6, 8, 0, 0, 0) / 1000;
 		const YEARS_TO_FINISH = 100;
 
 		const startDate = new Date(START_TIMESTAMP * 1000);
