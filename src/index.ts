@@ -42,12 +42,16 @@ export default {
     }
 
 	if (url.pathname === "/bar2") {
-		const START_TIMESTAMP = 1751958000; // seconds since epoch
+		const START_TIMESTAMP = 1751958000; // 8 July 2025, 00:00:00 UTC
 		const YEARS_TO_FINISH = 100;
 		const startDate = new Date(START_TIMESTAMP * 1000);
 
-		const estimatedFinishDate = new Date(startDate);
-		estimatedFinishDate.setUTCFullYear(startDate.getUTCFullYear() + YEARS_TO_FINISH);
+		const estimatedFinishDate = new Date(Date.UTC(
+			startDate.getUTCFullYear() + YEARS_TO_FINISH,
+			startDate.getUTCMonth(),
+			startDate.getUTCDate(),
+			0, 0, 0
+		));
 
 		const now = new Date();
 
