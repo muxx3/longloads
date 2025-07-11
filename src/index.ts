@@ -42,13 +42,9 @@ export default {
     }
 
 	if (url.pathname === "/bar2") {
-		const START_TIMESTAMP = Date.UTC(2025, 6, 8, 0, 0, 0) / 1000;
-		const YEARS_TO_FINISH = 100;
+		const startDate = new Date(Date.UTC(2025, 6, 8, 0, 0, 0)); // July is month 6
 
-		const startDate = new Date(START_TIMESTAMP * 1000);
-
-		const estimatedFinishDate = new Date(startDate);
-		estimatedFinishDate.setUTCFullYear(startDate.getUTCFullYear() + YEARS_TO_FINISH);
+		const estimatedFinishDate = new Date(Date.UTC(2025 + 100, 6, 8, 0, 0, 0));
 
 		const now = new Date();
 
