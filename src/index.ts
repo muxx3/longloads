@@ -1,7 +1,7 @@
 function formatDate(date: Date) {
-  const day = date.getDate().toString().padStart(2, "0");
-  const monthShort = date.toLocaleString("en-US", { month: "short" });
-  const year = date.getFullYear();
+  const day = date.getUTCDate().toString().padStart(2, "0");
+  const monthShort = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+  const year = date.getUTCFullYear();
   return `${day}-${monthShort}-${year}`;
 }
 
@@ -41,12 +41,20 @@ export default {
       );
     }
 
-    if (url.pathname === "/bar2") {
-      const START_TIMESTAMP = 1751958000; // seconds since epoch
+   if (url.pathname === "/bar2") {
+      const START_TIMESTAMP = 1751958000; // seconds since epoch (UTC)
+
       const YEARS_TO_FINISH = 100;
       const startDate = new Date(START_TIMESTAMP * 1000);
-      const estimatedFinishDate = new Date(startDate);
-      estimatedFinishDate.setFullYear(startDate.getFullYear() + YEARS_TO_FINISH);
+
+      const estimatedFinishDate = new Date(Date.UTC(
+        startDate.getUTCFullYear() + YEARS_TO_FINISH,
+        startDate.getUTCMonth(),
+        startDate.getUTCDate(),
+        startDate.getUTCHours(),
+        startDate.getUTCMinutes(),
+        startDate.getUTCSeconds()
+      ));
 
       const now = new Date();
 
