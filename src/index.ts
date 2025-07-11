@@ -1,6 +1,8 @@
 function formatDate(date: Date) {
   const day = date.getUTCDate().toString().padStart(2, "0");
-  const monthShort = date.toLocaleString("en-US", { month: "short", timeZone: "UTC" });
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthShort = monthNames[date.getUTCMonth()];
   const year = date.getUTCFullYear();
   return `${day}-${monthShort}-${year}`;
 }
