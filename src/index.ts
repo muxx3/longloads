@@ -41,43 +41,36 @@ export default {
       );
     }
 
-   if (url.pathname === "/bar2") {
-      const START_TIMESTAMP = 1751958000; // seconds since epoch (UTC)
+	if (url.pathname === "/bar2") {
+		const START_TIMESTAMP = 1751958000; // seconds since epoch
+		const YEARS_TO_FINISH = 100;
+		const startDate = new Date(START_TIMESTAMP * 1000);
 
-      const YEARS_TO_FINISH = 100;
-      const startDate = new Date(START_TIMESTAMP * 1000);
+		const estimatedFinishDate = new Date(startDate);
+		estimatedFinishDate.setUTCFullYear(startDate.getUTCFullYear() + YEARS_TO_FINISH);
 
-      const estimatedFinishDate = new Date(Date.UTC(
-        startDate.getUTCFullYear() + YEARS_TO_FINISH,
-        startDate.getUTCMonth(),
-        startDate.getUTCDate(),
-        startDate.getUTCHours(),
-        startDate.getUTCMinutes(),
-        startDate.getUTCSeconds()
-      ));
+		const now = new Date();
 
-      const now = new Date();
+		const totalDurationMs = estimatedFinishDate.getTime() - startDate.getTime();
+		const elapsedMs = now.getTime() - startDate.getTime();
 
-      const totalDurationMs = estimatedFinishDate.getTime() - startDate.getTime();
-      const elapsedMs = now.getTime() - startDate.getTime();
+		const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
 
-      const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
+		const estimatedFinishStr = formatDate(estimatedFinishDate);
 
-      const estimatedFinishStr = formatDate(estimatedFinishDate);
-
-      return new Response(
-        JSON.stringify({
-          progress,
-          estimated_finish: estimatedFinishStr,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": corsOrigin,
-          },
-        }
-      );
-    }
+		return new Response(
+			JSON.stringify({
+				progress,
+				estimated_finish: estimatedFinishStr,
+			}),
+			{
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": corsOrigin,
+				},
+			}
+		);
+	}
 
     if (url.pathname === "/bar3") {
       const now = new Date();
