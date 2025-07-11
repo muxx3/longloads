@@ -44,17 +44,16 @@ export default {
 	if (url.pathname === "/bar2") {
 		const START_TIMESTAMP = 1751958000; // 8 July 2025 at 00:00:00 UTC
 		const YEARS_TO_FINISH = 100;
-		const MS_PER_YEAR = 31_557_600_000; // average year in milliseconds
 
-		const startMs = START_TIMESTAMP * 1000;
+		const startDate = new Date(START_TIMESTAMP * 1000);
 
-		const estimatedFinishMs = startMs + YEARS_TO_FINISH * MS_PER_YEAR;
-		const estimatedFinishDate = new Date(estimatedFinishMs);
+		const estimatedFinishDate = new Date(startDate);
+		estimatedFinishDate.setUTCFullYear(startDate.getUTCFullYear() + YEARS_TO_FINISH);
 
-		const nowMs = Date.now();
+		const now = new Date();
 
-		const totalDurationMs = estimatedFinishMs - startMs;
-		const elapsedMs = nowMs - startMs;
+		const totalDurationMs = estimatedFinishDate.getTime() - startDate.getTime();
+		const elapsedMs = now.getTime() - startDate.getTime();
 
 		const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
 
