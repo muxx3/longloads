@@ -44,9 +44,11 @@ export default {
     }
 
 	if (url.pathname === "/bar2") {
-		const startDate = new Date(Date.UTC(2025, 6, 8, 0, 0, 0)); // July is month 6
+		const startDate = new Date(Date.UTC(2025, 6, 8, 0, 0, 0));
 
-		const estimatedFinishDate = new Date(Date.UTC(2025 + 100, 6, 8, 0, 0, 0));
+		const estimatedFinishDate = new Date(startDate.getTime());
+		estimatedFinishDate.setUTCFullYear(startDate.getUTCFullYear() + 100);
+		console.log(estimatedFinishDate);
 
 		const now = new Date();
 
@@ -56,6 +58,7 @@ export default {
 		const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
 
 		const estimatedFinishStr = formatDate(estimatedFinishDate);
+		console.log(estimatedFinishStr);
 
 		return new Response(
 			JSON.stringify({
