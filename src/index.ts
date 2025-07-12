@@ -48,7 +48,9 @@ export default {
 
 		const estimatedFinishDate = new Date(startDate.getTime());
 		estimatedFinishDate.setUTCFullYear(startDate.getUTCFullYear() + 100);
-		console.log(estimatedFinishDate);
+
+		console.log("Start date (UTC):", startDate.toISOString());
+		console.log("Estimated finish date (UTC):", estimatedFinishDate.toISOString());
 
 		const now = new Date();
 
@@ -58,7 +60,6 @@ export default {
 		const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
 
 		const estimatedFinishStr = formatDate(estimatedFinishDate);
-		console.log(estimatedFinishStr);
 
 		return new Response(
 			JSON.stringify({
