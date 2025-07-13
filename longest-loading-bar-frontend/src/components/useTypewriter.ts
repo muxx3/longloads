@@ -27,7 +27,7 @@ export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
     let stopped = false;
 
     setDisplayed("");
-    started.current = false;
+    started.current = false; // Reset started ref on new text
 
     async function playClick(volume = 1) {
       if (!audioContext.current || !audioBuffer.current) return;
@@ -38,14 +38,14 @@ export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
       const source = audioContext.current.createBufferSource();
       source.buffer = audioBuffer.current!;
 
-	  const gainNode = audioContext.current.createGain();
+      const gainNode = audioContext.current.createGain();
       gainNode.gain.setValueAtTime(volume, audioContext.current.currentTime);
 
-	  source.connect(gainNode);
+      source.connect(gainNode);
       gainNode.connect(audioContext.current.destination);
 
-      source.start();
-    }
+      source.start(0, 0.4);
+	}
 
     const delayBeforeTyping = 500;
 
@@ -55,7 +55,7 @@ export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
 
         setDisplayed(text.slice(0, i + 1));
 
-        if (soundUrl && i < text.length - 4) {
+        if (soundUrl && i < text.length - 3) {
           playClick().catch(() => {});
         }
 
@@ -67,9 +67,6 @@ export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
 
       type();
     }, delayBeforeTyping);
-
-	playClick(0.5).catch(() => {});
-
 
     return () => {
       stopped = true;
