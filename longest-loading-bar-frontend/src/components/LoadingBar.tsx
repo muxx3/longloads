@@ -23,7 +23,6 @@ export default function LoadingBar({
 
   const [barWidth, setBarWidth] = useState<number>(800);
 
-  // Responsive width calculation on mount and resize
   useEffect(() => {
     function updateWidth() {
       const maxWidth = 800;
@@ -37,7 +36,6 @@ export default function LoadingBar({
     return () => window.removeEventListener("resize", updateWidth);
   }, []);
 
-  // Progress fetching logic same as before
   useEffect(() => {
     let interval: NodeJS.Timeout;
 

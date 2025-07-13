@@ -27,9 +27,9 @@ export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
     let stopped = false;
 
     setDisplayed("");
-    started.current = false; // Reset started ref on new text
+    started.current = false;
 
-    async function playClick() {
+    async function playClick(volume = 1) {
       if (!audioContext.current || !audioBuffer.current) return;
       if (audioContext.current.state === "suspended" && !started.current) {
         await audioContext.current.resume();
@@ -37,12 +37,17 @@ export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
       }
       const source = audioContext.current.createBufferSource();
       source.buffer = audioBuffer.current!;
-      source.connect(audioContext.current.destination);
-      source.start(0);
+
+	  const gainNode = audioContext.current.createGain();
+      gainNode.gain.setValueAtTime(volume, audioContext.current.currentTime);
+
+	  source.connect(gainNode);
+      gainNode.connect(audioContext.current.destination);
+
+      source.start();
     }
 
-    // Optional startup delay
-    const delayBeforeTyping = 499;
+    const delayBeforeTyping = 500;
 
     const delayTimeout = setTimeout(() => {
       function type() {
@@ -63,8 +68,8 @@ export function useTypewriter(text: string, speed = 50, soundUrl?: string) {
       type();
     }, delayBeforeTyping);
 
-    // Initial click to signal typing start
-    playClick().catch(() => {});
+	playClick(0.5).catch(() => {});
+
 
     return () => {
       stopped = true;
