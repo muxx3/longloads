@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import LoadingBar from "@/components/LoadingBar";
 
 export default function BarSwitcher() {
-  const [baseURL, setBaseURL] = useState("https://longest-loading-bar.muxxe-dev.workers.dev");
+  const [baseURL, setBaseURL] = useState("https://longest-loading-bar-backend.muxxe-dev.workers.dev");
 
   useEffect(() => {
     if (window.location.hostname === "localhost") {

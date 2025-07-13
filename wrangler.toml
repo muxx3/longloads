@@ -1,0 +1,5 @@
+name = "longest-loading-bar-backend"
+main = "src/index.ts"
+compatibility_date = "2025-07-08"
+workers_dev = true
+
