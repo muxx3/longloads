@@ -89,15 +89,7 @@ export default function LoadingBar({
 
   let formattedDate = "Loading...";
   if (finishDate) {
-    const date = new Date(finishDate);
-    if (!isNaN(date.getTime())) {
-      const day = date.getDate().toString().padStart(2, "0");
-      const monthShort = date.toLocaleString("en-US", { month: "short" });
-      const year = date.getFullYear();
-      formattedDate = `${day}-${monthShort}-${year}`;
-    } else {
       formattedDate = finishDate;
-    }
   }
 
   return (
