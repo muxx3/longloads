@@ -99,6 +99,39 @@ export default {
       );
     }
 
+	if (url.pathname === "/bar4") {
+		const startDate = new Date(Date.UTC(2025, 0, 0, 0, 0, 0));
+
+		const estimatedFinishDate = new Date(startDate.getTime());
+		estimatedFinishDate.setUTCFullYear(startDate.getUTCFullYear() + 1);
+
+		console.log("Start date (UTC):", startDate.toISOString());
+		console.log("Estimated finish date (UTC):", estimatedFinishDate.toISOString());
+
+		const now = new Date();
+
+		const totalDurationMs = estimatedFinishDate.getTime() - startDate.getTime();
+		const elapsedMs = now.getTime() - startDate.getTime();
+
+		const progress = Math.min(Math.max(elapsedMs / totalDurationMs, 0), 1);
+
+		const estimatedFinishStr = formatDate(estimatedFinishDate);
+
+		return new Response(
+			JSON.stringify({
+				progress,
+				estimated_finish: estimatedFinishStr,
+			}),
+			{
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": corsOrigin,
+				},
+			}
+		);
+	}
+
+
     return new Response("Not found", { status: 404 });
   },
 };
