@@ -27,6 +27,11 @@ export default function BarSwitcher() {
       title: "Local Day",
       mode: "localDay",
     },
+	{
+		title: "Current Year",
+		endpoint: `${baseURL}/bar4`,
+		mode: "server",
+	}
   ], [baseURL]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
