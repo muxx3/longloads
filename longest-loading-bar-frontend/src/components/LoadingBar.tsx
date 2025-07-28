@@ -26,7 +26,7 @@ export default function LoadingBar({
   useEffect(() => {
     function updateWidth() {
       const maxWidth = 800;
-      const padding = 32; // adjust as needed for container padding
+      const padding = 32; 
       const availableWidth = window.innerWidth - padding * 2;
       setBarWidth(Math.min(maxWidth, availableWidth));
     }
