@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import SketchLoadingBar from "./SketchLoadingBar";
 import ProgressInfo from "./ProgressInfo";
 
@@ -23,10 +23,14 @@ export default function LoadingBar({
 
   const [barWidth, setBarWidth] = useState<number>(800);
 
+  const startTimeRef = useRef<number>(0);
+  const animationFrameIdRef = useRef<number | null>(null);
+  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     function updateWidth() {
       const maxWidth = 800;
-      const padding = 32; 
+	  const padding = 32;
       const availableWidth = window.innerWidth - padding * 2;
       setBarWidth(Math.min(maxWidth, availableWidth));
     }
@@ -37,7 +41,17 @@ export default function LoadingBar({
   }, []);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    const duration = 1000;
+
+    // Clear existing timers with null checks
+    if (intervalIdRef.current !== null) {
+      clearInterval(intervalIdRef.current);
+      intervalIdRef.current = null;
+    }
+    if (animationFrameIdRef.current !== null) {
+      cancelAnimationFrame(animationFrameIdRef.current);
+      animationFrameIdRef.current = null;
+    }
 
     if (mode === "localDay") {
       const updateLocalDay = () => {
@@ -60,12 +74,55 @@ export default function LoadingBar({
       };
 
       updateLocalDay();
-      interval = setInterval(updateLocalDay, 1000);
+      intervalIdRef.current = setInterval(updateLocalDay, 1000);
 
-      return () => clearInterval(interval);
+      return () => {
+        if (intervalIdRef.current !== null) {
+          clearInterval(intervalIdRef.current);
+          intervalIdRef.current = null;
+        }
+      };
     }
 
     if (mode === "server" && endpoint) {
+      if (endpoint.endsWith("/bar5")) {
+        const fetchStartTime = async () => {
+          try {
+            const res = await fetch(endpoint);
+            if (!res.ok) throw new Error("Network response was not ok");
+            const data = await res.json();
+            startTimeRef.current = data.start_time_ms;
+            setFinishDate("1 second cycle");
+          } catch (error) {
+            console.error("Error fetching start time:", error);
+          }
+        };
+
+        fetchStartTime();
+        intervalIdRef.current = setInterval(fetchStartTime, 1000);
+
+        const animate = () => {
+          const now = Date.now();
+          const elapsed = (now - startTimeRef.current) % duration;
+          const newProgress = elapsed / duration;
+          setProgress(newProgress);
+          animationFrameIdRef.current = requestAnimationFrame(animate);
+        };
+
+        animationFrameIdRef.current = requestAnimationFrame(animate);
+
+        return () => {
+          if (intervalIdRef.current !== null) {
+            clearInterval(intervalIdRef.current);
+            intervalIdRef.current = null;
+          }
+          if (animationFrameIdRef.current !== null) {
+            cancelAnimationFrame(animationFrameIdRef.current);
+            animationFrameIdRef.current = null;
+          }
+        };
+      }
+
       const fetchProgress = async () => {
         try {
           const res = await fetch(endpoint);
@@ -79,17 +136,22 @@ export default function LoadingBar({
       };
 
       fetchProgress();
-      interval = setInterval(fetchProgress, 1000);
+      intervalIdRef.current = setInterval(fetchProgress, 1000);
 
-      return () => clearInterval(interval);
+      return () => {
+        if (intervalIdRef.current !== null) {
+          clearInterval(intervalIdRef.current);
+          intervalIdRef.current = null;
+        }
+      };
     }
   }, [endpoint, mode]);
 
-  const percentStr = (progress * 100).toFixed(12) + " % complete";
+  const percentStr = (progress * 100).toFixed(15) + " % complete";
 
   let formattedDate = "Loading...";
   if (finishDate) {
-      formattedDate = finishDate;
+    formattedDate = finishDate;
   }
 
   return (

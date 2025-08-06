@@ -25,11 +25,17 @@ export default function BarSwitcher() {
     },
     {
       title: "Local Day",
+	  //endpoint: `${baseURL}/bar3`,
       mode: "localDay",
     },
 	{
 		title: "Current Year",
 		endpoint: `${baseURL}/bar4`,
+		mode: "server",
+	},
+	{
+		title: "1 Second",
+		endpoint: `${baseURL}/bar5`,
 		mode: "server",
 	}
   ], [baseURL]);
