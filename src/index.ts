@@ -131,6 +131,23 @@ export default {
 		);
 	}
 
+	if (url.pathname === "/bar5") {
+		const now = Date.now();
+		return new Response(
+			JSON.stringify({
+				start_time_ms: now,
+				duration_ms: 1000,
+			}),
+			{
+				headers: {
+					"Content-Type": "application/json",
+					"Access-Control-Allow-Origin": corsOrigin,
+				},
+			}
+		);
+	}
+
+
 
     return new Response("Not found", { status: 404 });
   },
